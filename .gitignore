@@ -1,0 +1,56 @@
+# use glob syntax
+syntax: glob
+
+*.obj
+*.user
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.scc
+*.sdf
+*.opensdf
+[Bb]in
+[Dd]ebug*/
+obj/
+[Rr]elease*/
+_ReSharper*/
+[Tt]est[Rr]esult[^s]
+[Bb]uild[Ll]og.*
+*.[Pp]ublish.xml
+*.resharper
+*.pidb
+*.userprefs
+*.build.csdef
+TraceLog.txt
+packages/
+UpgradeLog*.*
+_UpgradeReport*/
+Thumbs.db
+*.vspx
+.nuget/NuGet.exe
+Downloaded Profiling Logs/*
+/src/Web/Scripts/admin/**/*.js
+/src/Web/Scripts/admin/**/*.js.map
+/src/Azure/Profiles
+/src/Azure/ServiceConfiguration.TeamCity.cscfg
+*.vsp
+*.Sync*
+*.ide/
+/src/Web/App/**/*.js
+/src/Web/App/**/*.js.map
+*.DS_Store
+Visual Studio 2013/*
+src/Web/Scripts/Hubs.js
