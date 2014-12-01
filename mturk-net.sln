@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mturk-net", "mturk-net\mturk-net.csproj", "{33B0C0EE-40A1-4ED7-9B8B-C09636C33FAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mturk-net.Tests", "mturk-net.Tests\mturk-net.Tests.csproj", "{CA70655E-1B92-4309-975E-67C8F0925C8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{33B0C0EE-40A1-4ED7-9B8B-C09636C33FAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33B0C0EE-40A1-4ED7-9B8B-C09636C33FAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33B0C0EE-40A1-4ED7-9B8B-C09636C33FAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA70655E-1B92-4309-975E-67C8F0925C8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA70655E-1B92-4309-975E-67C8F0925C8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA70655E-1B92-4309-975E-67C8F0925C8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA70655E-1B92-4309-975E-67C8F0925C8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
