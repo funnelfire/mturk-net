@@ -46,7 +46,9 @@ namespace MTurk
                 if (obj == null)
                     return;
 
-                if (path == null) path = String.Empty;
+                var type = obj.GetType();
+
+                if (path == null) path = string.Empty;
 
                 if (obj is DateTime)
                 {
@@ -62,7 +64,7 @@ namespace MTurk
                     return;
                 }
 
-                if (path != String.Empty)
+                if (path != string.Empty)
                     path += ".";
 
                 var objects = obj as IEnumerable<object>;
@@ -75,7 +77,8 @@ namespace MTurk
                     return;
                 }
 
-                var props = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(x => x.CanRead && x.CanWrite);
+                var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(x => x.CanRead);
+                if (props.Any(x => x.CanWrite)) props = props.Where(x => x.CanWrite);
                 var keyvalues = props.Select(x => new { Property = x, Value = x.GetValue(obj) });
                 foreach (var kv in keyvalues)
                 {
