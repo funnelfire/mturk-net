@@ -65,4 +65,9 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+
+  <UsingTask AssemblyFile="..\Packages\xunit.1.9.2\lib\net20\xunit.runner.msbuild.dll" TaskName="Xunit.Runner.MSBuild.xunit"/>
+  <Target Name="Test">
+    <xunit Assembly="bin\Debug\mturk-net.Tests.dll" />
+  </Target>
 </Project>

@@ -41,7 +41,7 @@ namespace MTurk
             return hmacString;
         }
 
-        public async Task CreateHIT()
+        public async Task CreateHIT(ExternalQuestion question)
         {
             var dto = new CreateHITRequest {};
             var qs = TurkSerializer.Serialize(dto);

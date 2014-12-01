@@ -49,6 +49,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTO\AnswerKey.cs">
+      <DependentUpon>AnswerKey.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DTO\ExternalQuestion.cs">
+      <DependentUpon>ExternalQuestion.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DTO\HTMLQuestion.cs">
+      <DependentUpon>HTMLQuestion.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DTO\QuestionForm.cs">
+      <DependentUpon>QuestionForm.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DTO\QuestionFormAnswers.cs">
+      <DependentUpon>QuestionFormAnswers.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Turk.cs" />
     <Compile Include="TurkSerializer.cs" />
     <Compile Include="DTO\AWSMechanicalTurkRequester.cs">
