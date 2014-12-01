@@ -54,3 +54,4 @@ Downloaded Profiling Logs/*
 *.DS_Store
 Visual Studio 2013/*
 src/Web/Scripts/Hubs.js
+**/Credentials.cs
