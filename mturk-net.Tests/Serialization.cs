@@ -7,7 +7,7 @@ using Xunit;
 
 namespace MTurk.Tests
 {
-    public class SerializationTests
+    public class Serialization
     {
         [Fact]
         public void Scalar()

@@ -41,10 +41,21 @@ namespace MTurk
             return hmacString;
         }
 
-        public async Task CreateHIT(ExternalQuestion question)
+        public async Task CreateHIT(string hitTypeId, IQuestion question, TimeSpan lifetime, ReviewPolicy assignmentReviewPolicy, ReviewPolicy hitReviewPolicy, string requesterAnnotation = null, int maxAssignments = 1)
         {
-            var dto = new CreateHITRequest {};
-            var qs = TurkSerializer.Serialize(dto);
+            var requestToken = Guid.NewGuid();
+            var request = new CreateHITRequest
+            {
+                HITTypeId = hitTypeId,
+                LifetimeInSeconds = (long)lifetime.TotalSeconds,
+                MaxAssignments = maxAssignments,
+                AssignmentReviewPolicy = assignmentReviewPolicy,
+                HITReviewPolicy = hitReviewPolicy,
+                RequesterAnnotation = requesterAnnotation,
+                UniqueRequestToken = requestToken.ToString("N")
+            };
+
+            var qs = TurkSerializer.Serialize(request);
         }
     }
 }

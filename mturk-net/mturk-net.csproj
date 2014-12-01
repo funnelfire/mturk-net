@@ -58,6 +58,7 @@
     <Compile Include="DTO\HTMLQuestion.cs">
       <DependentUpon>HTMLQuestion.xsd</DependentUpon>
     </Compile>
+    <Compile Include="DTO\IQuestion.cs" />
     <Compile Include="DTO\QuestionForm.cs">
       <DependentUpon>QuestionForm.xsd</DependentUpon>
     </Compile>
