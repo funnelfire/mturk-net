@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using MTurk.DTO;
 
 namespace MTurk
@@ -66,6 +68,13 @@ namespace MTurk
                 RequesterAnnotation = requesterAnnotation,
                 UniqueRequestToken = requestToken.ToString("N")
             };
+
+            var serializer = new XmlSerializer(question.GetType());
+            using (var sw = new StringWriter())
+            {
+                serializer.Serialize(sw, question);
+                request.Question = sw.ToString();
+            }
 
             var header = new RestHeader
             {
