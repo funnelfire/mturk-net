@@ -65,6 +65,7 @@
     <Compile Include="DTO\QuestionFormAnswers.cs">
       <DependentUpon>QuestionFormAnswers.xsd</DependentUpon>
     </Compile>
+    <Compile Include="DTO\RestHeader.cs" />
     <Compile Include="Turk.cs" />
     <Compile Include="TurkSerializer.cs" />
     <Compile Include="DTO\AWSMechanicalTurkRequester.cs">

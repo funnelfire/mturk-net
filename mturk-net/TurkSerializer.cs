@@ -14,14 +14,25 @@ namespace MTurk
     {
         public static string Serialize(object obj)
         {
-            var col = Internals.Collect(obj);
-            var qs = col.ToQueryString();
+            var col = Collect(obj);
+            var qs = ToQueryString(col);
             return qs;
         }
 
         public static string ToQueryString(this NameValueCollection collection)
         {
-            return string.Join("&", collection.AllKeys.Select(a => a + "=" + HttpUtility.UrlEncode(collection[a])));
+            return String.Join("&", collection.AllKeys.Select(a => a + "=" + HttpUtility.UrlEncode(collection[a])));
+        }
+        public static NameValueCollection Collect(object obj)
+        {
+            var col = new NameValueCollection();
+            Collect(obj, col);
+            return col;
+        }
+
+        public static void Collect(object obj, NameValueCollection collection)
+        {
+            Internals.ParsePath(collection, null, obj);
         }
 
         public static class Internals
@@ -35,7 +46,14 @@ namespace MTurk
                 if (obj == null)
                     return;
 
-                if (path == null) path = string.Empty;
+                if (path == null) path = String.Empty;
+
+                if (obj is DateTime)
+                {
+                    var dt = (DateTime)obj;
+                    collection[path] = dt.ToString("O");
+                    return;
+                }
 
                 var converter = Convertibles.Where(x => x.Key.IsInstanceOfType(obj)).Select(x => x.Value).FirstOrDefault();
                 if (converter != null)
@@ -44,7 +62,7 @@ namespace MTurk
                     return;
                 }
 
-                if (path != string.Empty)
+                if (path != String.Empty)
                     path += ".";
 
                 var objects = obj as IEnumerable<object>;
@@ -57,19 +75,12 @@ namespace MTurk
                     return;
                 }
 
-                var props = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(x => x.CanRead);
+                var props = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(x => x.CanRead && x.CanWrite);
                 var keyvalues = props.Select(x => new { Property = x, Value = x.GetValue(obj) });
                 foreach (var kv in keyvalues)
                 {
                     ParsePath(collection, path + kv.Property.Name, kv.Value);
                 }
-            }
-
-            public static NameValueCollection Collect(object obj)
-            {
-                var col = new NameValueCollection();
-                Internals.ParsePath(col, null, obj);
-                return col;
             }
         }
     }

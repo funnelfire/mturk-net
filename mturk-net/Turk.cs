@@ -41,7 +41,19 @@ namespace MTurk
             return hmacString;
         }
 
-        public async Task CreateHIT(string hitTypeId, IQuestion question, TimeSpan lifetime, ReviewPolicy assignmentReviewPolicy, ReviewPolicy hitReviewPolicy, string requesterAnnotation = null, int maxAssignments = 1)
+        public static void Sign(RestHeader header, string secretKey)
+        {
+            var hmac = CalculateHMAC(
+                service: "AWSMechanicalTurkRequester", // see: http://docs.aws.amazon.com/AWSMechTurk/latest/AWSMturkAPI/ApiReference_CommonParametersArticle.html
+                operation: header.Operation,
+                timestamp: header.Timestamp,
+                secretKey: secretKey
+            );
+
+            header.Signature = hmac;
+        }
+
+        public async Task CreateHIT(string hitTypeId, IQuestion question, TimeSpan lifetime, ReviewPolicy assignmentReviewPolicy = null, ReviewPolicy hitReviewPolicy = null, string requesterAnnotation = null, int maxAssignments = 1)
         {
             var requestToken = Guid.NewGuid();
             var request = new CreateHITRequest
@@ -55,7 +67,21 @@ namespace MTurk
                 UniqueRequestToken = requestToken.ToString("N")
             };
 
-            var qs = TurkSerializer.Serialize(request);
+            var header = new RestHeader
+            {
+                Operation = "CreateHIT",
+                AWSAccessKey = _accessKey,
+            };
+            Sign(header, _secretKey);
+
+            var col = TurkSerializer.Collect(request);
+            TurkSerializer.Collect(header, col);
+            var qs = col.ToQueryString();
+
+            using (var result = await HttpClient.GetAsync(new UriBuilder(_baseUri) { Query = qs }.Uri))
+            {
+                
+            }
         }
     }
 }
