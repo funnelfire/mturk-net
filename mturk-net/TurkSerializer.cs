@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace MTurk
 {
@@ -82,7 +84,12 @@ namespace MTurk
                 var keyvalues = props.Select(x => new { Property = x, Value = x.GetValue(obj) });
                 foreach (var kv in keyvalues)
                 {
-                    ParsePath(collection, path + kv.Property.Name, kv.Value);
+                    if (kv.Property.GetCustomAttribute<XmlIgnoreAttribute>(true) != null) continue;
+
+                    var elementAttr = kv.Property.GetCustomAttribute<XmlElementAttribute>(true);
+                    var name = elementAttr == null ? kv.Property.Name : elementAttr.ElementName;
+
+                    ParsePath(collection, path + name, kv.Value);
                 }
             }
         }
