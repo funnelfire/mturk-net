@@ -135,6 +135,7 @@ namespace MTurk
             {
                 Operation = "CreateHIT",
                 AWSAccessKey = _accessKey,
+                Timestamp = DateTime.UtcNow
             };
             Sign(header, _secretKey);
 
@@ -142,7 +143,7 @@ namespace MTurk
             TurkSerializer.Collect(header, col);
             var qs = col.ToQueryString();
 
-            var serializer = new XmlSerializer(typeof (CreateHITResponse));
+            var serializer = new XmlSerializer(typeof(CreateHITResponse));
 
             var builder = new UriBuilder(_baseUri) { Query = qs };
             using (var result = await HttpClient.GetAsync(builder.Uri))
