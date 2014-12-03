@@ -9,7 +9,7 @@ namespace MTurk.DTO
     public class RestHeader
     {
         public string Service { get; set; } = "AWSMechanicalTurkRequester";
-        public string AWSAccessKey { get; set; }
+        public string AWSAccessKeyId { get; set; }
         public string Version { get; set; }
         public string Operation { get; set; }
         public string Signature { get; set; }

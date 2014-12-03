@@ -51,16 +51,8 @@ namespace MTurk
 
         public static void Sign(RestHeader header, string secretKey)
         {
-            var col = new NameValueCollection
-            {
-                ["service"] = header.Service,
-                ["operation"] = header.Operation,
-                ["timestamp"] = header.Timestamp.ToString("O")
-            };
-
-            var qs = col.ToQueryString(urlEncode: false);
-
-            var hmac = CalculateHMAC(qs, secretKey);
+            var hash = header.Service + header.Operation + header.Timestamp.ToString("O");
+            var hmac = CalculateHMAC(hash, secretKey);
 
             header.Signature = hmac;
         }
@@ -134,7 +126,7 @@ namespace MTurk
             var header = new RestHeader
             {
                 Operation = "CreateHIT",
-                AWSAccessKey = _accessKey,
+                AWSAccessKeyId = _accessKey,
                 Timestamp = DateTime.UtcNow
             };
             Sign(header, _secretKey);
