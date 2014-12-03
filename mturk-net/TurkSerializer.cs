@@ -21,9 +21,9 @@ namespace MTurk
             return qs;
         }
 
-        public static string ToQueryString(this NameValueCollection collection)
+        public static string ToQueryString(this NameValueCollection collection, bool urlEncode = true)
         {
-            return String.Join("&", collection.AllKeys.Select(a => a + "=" + HttpUtility.UrlEncode(collection[a])));
+            return string.Join("&", collection.AllKeys.Select(a => a + "=" + (urlEncode ? HttpUtility.UrlEncode(collection[a]) : collection[a])));
         }
         public static NameValueCollection Collect(object obj)
         {

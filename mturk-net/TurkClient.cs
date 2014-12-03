@@ -58,7 +58,7 @@ namespace MTurk
                 ["timestamp"] = header.Timestamp.ToString("O")
             };
 
-            var qs = col.ToQueryString();
+            var qs = col.ToQueryString(urlEncode: false);
 
             var hmac = CalculateHMAC(qs, secretKey);
 
