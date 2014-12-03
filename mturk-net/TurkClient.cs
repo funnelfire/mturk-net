@@ -32,7 +32,7 @@ namespace MTurk
         }
 
         public TurkClient(string accessKey, string secretKey, bool sandbox)
-            : this(accessKey, secretKey, sandbox ? new Uri("http://mechanicalturk.sandbox.amazonaws.com/") : new Uri("https://mechanicalturk.amazonaws.com/"))
+            : this(accessKey, secretKey, sandbox ? new Uri("https://mechanicalturk.sandbox.amazonaws.com/") : new Uri("https://mechanicalturk.amazonaws.com/"))
         {
         }
 
