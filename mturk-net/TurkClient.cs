@@ -80,7 +80,7 @@ namespace MTurk
 
             PackQuestion(question, request);
 
-            var resp = await ExecuteRequest(request);
+            var resp = await ExecuteRequest<CreateHITRequest, CreateHITResponse>(request);
             return resp;
         }
 
@@ -118,7 +118,7 @@ namespace MTurk
 
             PackQuestion(question, request);
 
-            var resp = await ExecuteRequest(request);
+            var resp = await ExecuteRequest<CreateHITRequest, CreateHITResponse>(request);
             return resp;
         }
 
@@ -132,11 +132,12 @@ namespace MTurk
             }
         }
 
-        private async Task<CreateHITResponse> ExecuteRequest(CreateHITRequest request)
+        private async Task<TResponse> ExecuteRequest<TRequest, TResponse>(TRequest request)
         {
+            var operation = typeof(TRequest).Name.TrimEnd("Request");
             var header = new RestHeader
             {
-                Operation = "CreateHIT",
+                Operation = operation,
                 AWSAccessKeyId = _accessKey,
                 Timestamp = DateTime.UtcNow
             };
@@ -146,17 +147,18 @@ namespace MTurk
             TurkSerializer.Collect(header, col);
             var qs = col.ToQueryString();
 
-            var serializer = new XmlSerializer(typeof(CreateHITResponse));
+            var serializer = new XmlSerializer(typeof(TResponse));
 
             var builder = new UriBuilder(_baseUri) { Query = qs };
             using (var result = await HttpClient.GetAsync(builder.Uri))
             {
+                result.EnsureSuccessStatusCode();
+
                 using (var stream = await result.Content.ReadAsStreamAsync())
                 using (var tr = new StreamReader(stream))
                 using (var nsxtr = new NamespaceIgnorantXmlTextReader(tr))
                 {
-                    var resp = (CreateHITResponse)serializer.Deserialize(nsxtr);
-                    
+                    var resp = (TResponse)serializer.Deserialize(nsxtr);
                     return resp;
                 }
             }
