@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Serialization;
 using MTurk.DTO;
 
@@ -121,6 +122,16 @@ namespace MTurk
             return resp;
         }
 
+        private class NamespaceIgnorantXmlTextReader : XmlTextReader
+        {
+            public NamespaceIgnorantXmlTextReader(System.IO.TextReader reader) : base(reader) { }
+
+            public override string NamespaceURI
+            {
+                get { return base.NamespaceURI == string.Empty ? "http://requester.mturk.amazonaws.com/doc/2013-11-15" : base.NamespaceURI; }
+            }
+        }
+
         private async Task<CreateHITResponse> ExecuteRequest(CreateHITRequest request)
         {
             var header = new RestHeader
@@ -141,8 +152,10 @@ namespace MTurk
             using (var result = await HttpClient.GetAsync(builder.Uri))
             {
                 using (var stream = await result.Content.ReadAsStreamAsync())
+                using (var tr = new StreamReader(stream))
+                using (var nsxtr = new NamespaceIgnorantXmlTextReader(tr))
                 {
-                    var resp = (CreateHITResponse)serializer.Deserialize(stream);
+                    var resp = (CreateHITResponse)serializer.Deserialize(nsxtr);
                     return resp;
                 }
             }
