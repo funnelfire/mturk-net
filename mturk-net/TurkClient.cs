@@ -156,15 +156,21 @@ namespace MTurk
                 using (var nsxtr = new NamespaceIgnorantXmlTextReader(tr))
                 {
                     var resp = (CreateHITResponse)serializer.Deserialize(nsxtr);
+                    
                     return resp;
                 }
             }
         }
 
+        private class Utf8StringWriter : StringWriter
+        {
+            public override Encoding Encoding { get; } = new UTF8Encoding(true);
+        }
+
         private static void PackQuestion(IQuestion question, CreateHITRequest request)
         {
             var serializer = new XmlSerializer(question.GetType());
-            using (var sw = new StringWriter())
+            using (var sw = new Utf8StringWriter())
             {
                 serializer.Serialize(sw, question);
                 request.Question = sw.ToString();
