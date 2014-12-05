@@ -11,6 +11,17 @@ namespace MTurk
 {
     partial class TurkClient
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hitTypeId"></param>
+        /// <param name="question"></param>
+        /// <param name="lifetime"></param>
+        /// <param name="assignmentReviewPolicy"></param>
+        /// <param name="hitReviewPolicy"></param>
+        /// <param name="requesterAnnotation"></param>
+        /// <param name="maxAssignments"></param>
+        /// <returns></returns>
         public async Task<CreateHITResponse> CreateHIT(string hitTypeId,
             IQuestion question,
             TimeSpan lifetime,

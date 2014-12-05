@@ -1,15 +1,23 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Runtime" #>
+<#@ assembly name="System.Net.Http" #>
 <#@ assembly name="$(TargetPath)" #>
 <#@ assembly name="$(ProjectDir)$(OutDir)System.Collections.Immutable.dll" #>
+<#@ assembly name="$(ProjectDir)$(OutDir)SgmlReaderDll.dll" #>
+<#@ import namespace="System.IO" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.CodeDom" #>
 <#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Xml.Linq" #>
 <#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Net.Http" #>
 <#@ import namespace="System.Collections.Immutable" #>
 <#@ import namespace="Microsoft.CSharp" #>
+<#@ import namespace="Sgml" #>
 <#@ import namespace="MTurk" #>
 <#@ import namespace="MTurk.Extensions" #>
 <#@ output extension=".generated.cs" #>
@@ -68,7 +76,47 @@ namespace MTurk
 				return new { Property = p, ParameterName = name, ParameterType = type, Suffix = suffix, Optional = optional };
 			});
 		var argString = string.Join(", ", args.Select(arg => string.Format("{0} {1}{2}", compiler.GetTypeOutput(new CodeTypeReference(arg.ParameterType)), arg.ParameterName, arg.Suffix)));
+
+		// create documentation
+		var url = "http://docs.aws.amazon.com/AWSMechTurk/latest/AWSMturkAPI/ApiReference_" + reqresp.Name + "Operation.html";
+		var client = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false });
+		var result = client.GetAsync(url).Result;
+		if (result.StatusCode == System.Net.HttpStatusCode.Found)
+			result = client.GetAsync(url.Replace("HIT", "Hit")).Result;
+		ImmutableList<string> descriptionLines;
+		ImmutableDictionary<string, string> argsDetails;
+		if (result.StatusCode != System.Net.HttpStatusCode.Found)
+		{
+			var content = result.Content.ReadAsStringAsync().Result;
+			var sgmlreader = new SgmlReader() { InputStream = new StringReader(content), IgnoreDtd = true };
+			var xo = XDocument.Load(sgmlreader);
+			var descriptionBlock = xo.Descendants().Where(x => x.Name == "div" && x.Attribute("class") != null && x.Attribute("class").Value == "section" && x.Descendants().Any(y => y.Name == "h2" && y.Value.Replace("\n", " ").Replace("\t", "").Trim() == "Description")).Skip(1).Single();
+			descriptionLines = descriptionBlock.Descendants().Where(x => x.Name == "p").Select(x => x.Value.Replace("\n", " ").Replace("\t", "").Trim()).Where(x => x != "Note").ToImmutableList();
+			var argsBlock = xo.Descendants("div").Where(x => x.Attribute("class") != null && x.Attribute("class").Value == "section" && x.Descendants("h2").Any(y => y.Value.Replace("\n", " ").Replace("\t", "").Trim() == "Request Parameters")).Skip(1).Single();
+			argsDetails = argsBlock.Descendants("tr").Skip(1).ToImmutableDictionary(x => x.Elements("td").First().Value.Trim(), x => x.Elements("td").Skip(1).First().Elements("p").First().Value.Replace("\n", " ").Replace("\t", "").Trim());
+		}
+		else
+		{
+			descriptionLines = null;
+			argsDetails = null;
+		}
+
+		if (descriptionLines != null)
+		{
 #>
+		/// <summary>
+<#			foreach (var line in descriptionLines) { #>
+		/// <#=line #>
+<#			} #>
+		/// </summary>
+<#
+			foreach (var arg in args.Where(x => argsDetails.ContainsKey(x.Property.Name)))
+			{
+#>
+        /// <param name="<#= arg.ParameterName #>"><#= argsDetails[arg.Property.Name] #></param>
+<#			}
+		}
+ #>
         public async Task<<#=reqresp.ResponseType.Name #>> <#=reqresp.Name #>(<#=argString #>)
 		{
 			var request = new <#=reqresp.RequestType.Name #>
