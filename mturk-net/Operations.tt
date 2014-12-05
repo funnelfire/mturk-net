@@ -104,11 +104,11 @@ namespace MTurk
 		if (descriptionLines != null)
 		{
 #>
-		/// <summary>
+        /// <summary>
 <#			foreach (var line in descriptionLines) { #>
-		/// <#=line #>
+        /// <#=line #>
 <#			} #>
-		/// </summary>
+        /// </summary>
 <#
 			foreach (var arg in args.Where(x => argsDetails.ContainsKey(x.Property.Name)))
 			{
