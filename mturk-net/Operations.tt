@@ -32,77 +32,77 @@ namespace MTurk
 <#
     var compiler = new CSharpCodeProvider();
 
-	var types = typeof(TurkClient).Assembly.GetTypes()
-		.Where(t => t.Namespace != null && t.Namespace.StartsWith("MTurk.DTO"))
-		.ToImmutableHashSet();
-	var requests = types
-		.Where(t => t.Name.EndsWith("Request"))
-		.Select(t => new { RequestType = t, Name = t.Name.TrimEnd("Request") })
-		.Where(x => x.Name != "CreateHIT")
-		.Select(x => new { x.RequestType, x.Name, ResponseType = types.SingleOrDefault(t => t.Name == x.Name + "Response") })
-		.Where(x => x.ResponseType != null);
+    var types = typeof(TurkClient).Assembly.GetTypes()
+        .Where(t => t.Namespace != null && t.Namespace.StartsWith("MTurk.DTO"))
+        .ToImmutableHashSet();
+    var requests = types
+        .Where(t => t.Name.EndsWith("Request"))
+        .Select(t => new { RequestType = t, Name = t.Name.TrimEnd("Request") })
+        .Where(x => x.Name != "CreateHIT")
+        .Select(x => new { x.RequestType, x.Name, ResponseType = types.SingleOrDefault(t => t.Name == x.Name + "Response") })
+        .Where(x => x.ResponseType != null);
 
-	foreach (var reqresp in requests)
-	{
-		// create arg list
-		var props = reqresp.RequestType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-		var propNames = props.Select(x => x.Name).ToImmutableHashSet();
-		var args = props.Where(x => !x.Name.EndsWith("Specified"))
-			.OrderBy(x => propNames.Contains(x.Name + "Specified"))
-			.Select(p => 
-			{
-				var name = p.Name;
-				if (name.StartsWith("HIT"))
-					name = "hit" + name.Substring(3);
-				else
-					name = char.ToLower(name[0]) + name.Substring(1);
-				var type = p.PropertyType;
-				string suffix = "";
+    foreach (var reqresp in requests)
+    {
+        // create arg list
+        var props = reqresp.RequestType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        var propNames = props.Select(x => x.Name).ToImmutableHashSet();
+        var args = props.Where(x => !x.Name.EndsWith("Specified"))
+            .OrderBy(x => propNames.Contains(x.Name + "Specified"))
+            .Select(p => 
+            {
+                var name = p.Name;
+                if (name.StartsWith("HIT"))
+                    name = "hit" + name.Substring(3);
+                else
+                    name = char.ToLower(name[0]) + name.Substring(1);
+                var type = p.PropertyType;
+                string suffix = "";
 
-				if (type == typeof(long) && name.EndsWith("InSeconds"))
-				{
-					name = name.TrimEnd("InSeconds");
-					type = typeof(TimeSpan);
-				}
+                if (type == typeof(long) && name.EndsWith("InSeconds"))
+                {
+                    name = name.TrimEnd("InSeconds");
+                    type = typeof(TimeSpan);
+                }
 
-				var optional = propNames.Contains(p.Name + "Specified");
-				if (optional)
-				{
-					suffix = " = null";
-					if (p.PropertyType.IsValueType)
-						type = typeof(Nullable<>).MakeGenericType(type);
-				}
+                var optional = propNames.Contains(p.Name + "Specified");
+                if (optional)
+                {
+                    suffix = " = null";
+                    if (p.PropertyType.IsValueType)
+                        type = typeof(Nullable<>).MakeGenericType(type);
+                }
 
-				return new { Property = p, ParameterName = name, ParameterType = type, Suffix = suffix, Optional = optional };
-			});
-		var argString = string.Join(", ", args.Select(arg => string.Format("{0} {1}{2}", compiler.GetTypeOutput(new CodeTypeReference(arg.ParameterType)), arg.ParameterName, arg.Suffix)));
+                return new { Property = p, ParameterName = name, ParameterType = type, Suffix = suffix, Optional = optional };
+            });
+        var argString = string.Join(", ", args.Select(arg => string.Format("{0} {1}{2}", compiler.GetTypeOutput(new CodeTypeReference(arg.ParameterType)), arg.ParameterName, arg.Suffix)));
 
-		// create documentation
-		var url = "http://docs.aws.amazon.com/AWSMechTurk/latest/AWSMturkAPI/ApiReference_" + reqresp.Name + "Operation.html";
-		var client = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false });
-		var result = client.GetAsync(url).Result;
-		if (result.StatusCode == System.Net.HttpStatusCode.Found)
-			result = client.GetAsync(url.Replace("HIT", "Hit")).Result;
-		ImmutableList<string> descriptionLines;
-		ImmutableDictionary<string, string> argsDetails;
-		if (result.StatusCode != System.Net.HttpStatusCode.Found)
-		{
-			var content = result.Content.ReadAsStringAsync().Result;
-			var sgmlreader = new SgmlReader() { InputStream = new StringReader(content), IgnoreDtd = true };
-			var xo = XDocument.Load(sgmlreader);
-			var descriptionBlock = xo.Descendants().Where(x => x.Name == "div" && x.Attribute("class") != null && x.Attribute("class").Value == "section" && x.Descendants().Any(y => y.Name == "h2" && y.Value.Replace("\n", " ").Replace("\t", "").Trim() == "Description")).Skip(1).Single();
-			descriptionLines = descriptionBlock.Descendants().Where(x => x.Name == "p").Select(x => x.Value.Replace("\n", " ").Replace("\t", "").Trim()).Where(x => x != "Note").ToImmutableList();
-			var argsBlock = xo.Descendants("div").Where(x => x.Attribute("class") != null && x.Attribute("class").Value == "section" && x.Descendants("h2").Any(y => y.Value.Replace("\n", " ").Replace("\t", "").Trim() == "Request Parameters")).Skip(1).Single();
-			argsDetails = argsBlock.Descendants("tr").Skip(1).ToImmutableDictionary(x => x.Elements("td").First().Value.Trim(), x => x.Elements("td").Skip(1).First().Elements("p").First().Value.Replace("\n", " ").Replace("\t", "").Trim());
-		}
-		else
-		{
-			descriptionLines = null;
-			argsDetails = null;
-		}
+        // create documentation
+        var url = "http://docs.aws.amazon.com/AWSMechTurk/latest/AWSMturkAPI/ApiReference_" + reqresp.Name + "Operation.html";
+        var client = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false });
+        var result = client.GetAsync(url).Result;
+        if (result.StatusCode == System.Net.HttpStatusCode.Found)
+            result = client.GetAsync(url.Replace("HIT", "Hit")).Result;
+        ImmutableList<string> descriptionLines;
+        ImmutableDictionary<string, string> argsDetails;
+        if (result.StatusCode != System.Net.HttpStatusCode.Found)
+        {
+            var content = result.Content.ReadAsStringAsync().Result;
+            var sgmlreader = new SgmlReader() { InputStream = new StringReader(content), IgnoreDtd = true };
+            var xo = XDocument.Load(sgmlreader);
+            var descriptionBlock = xo.Descendants().Where(x => x.Name == "div" && x.Attribute("class") != null && x.Attribute("class").Value == "section" && x.Descendants().Any(y => y.Name == "h2" && y.Value.Replace("\n", " ").Replace("\t", "").Trim() == "Description")).Skip(1).Single();
+            descriptionLines = descriptionBlock.Descendants().Where(x => x.Name == "p").Select(x => x.Value.Replace("\n", " ").Replace("\t", "").Trim()).Where(x => x != "Note").ToImmutableList();
+            var argsBlock = xo.Descendants("div").Where(x => x.Attribute("class") != null && x.Attribute("class").Value == "section" && x.Descendants("h2").Any(y => y.Value.Replace("\n", " ").Replace("\t", "").Trim() == "Request Parameters")).Skip(1).Single();
+            argsDetails = argsBlock.Descendants("tr").Skip(1).ToImmutableDictionary(x => x.Elements("td").First().Value.Trim(), x => x.Elements("td").Skip(1).First().Elements("p").First().Value.Replace("\n", " ").Replace("\t", "").Trim());
+        }
+        else
+        {
+            descriptionLines = null;
+            argsDetails = null;
+        }
 
-		if (descriptionLines != null)
-		{
+        if (descriptionLines != null)
+        {
 #>
         /// <summary>
 <#			foreach (var line in descriptionLines) { #>
@@ -110,58 +110,58 @@ namespace MTurk
 <#			} #>
         /// </summary>
 <#
-			foreach (var arg in args.Where(x => argsDetails.ContainsKey(x.Property.Name)))
-			{
+            foreach (var arg in args.Where(x => argsDetails.ContainsKey(x.Property.Name)))
+            {
 #>
         /// <param name="<#= arg.ParameterName #>"><#= argsDetails[arg.Property.Name] #></param>
 <#			}
-		}
+        }
  #>
         public async Task<<#=reqresp.ResponseType.Name #>> <#=reqresp.Name #>(<#=argString #>)
-		{
-			var request = new <#=reqresp.RequestType.Name #>
+        {
+            var request = new <#=reqresp.RequestType.Name #>
             {
 <#
-		foreach (var arg in args)
-		{
-			var propertyType = compiler.GetTypeOutput(new CodeTypeReference(arg.Property.PropertyType));
-			var parameterType = compiler.GetTypeOutput(new CodeTypeReference(arg.ParameterType));
+        foreach (var arg in args)
+        {
+            var propertyType = compiler.GetTypeOutput(new CodeTypeReference(arg.Property.PropertyType));
+            var parameterType = compiler.GetTypeOutput(new CodeTypeReference(arg.ParameterType));
 
-			if (arg.ParameterType == typeof(TimeSpan))
-			{
+            if (arg.ParameterType == typeof(TimeSpan))
+            {
 #>
-				<#=arg.Property.Name #> = ((long)<#=arg.ParameterName#>.TotalSeconds)<#=arg.Optional ? " ?? default(" + propertyType + ")" : "" #>,
+                <#=arg.Property.Name #> = ((long)<#=arg.ParameterName#>.TotalSeconds)<#=arg.Optional ? " ?? default(" + propertyType + ")" : "" #>,
 <#
-			}
-			else if (arg.ParameterType == typeof(TimeSpan?))
-			{
+            }
+            else if (arg.ParameterType == typeof(TimeSpan?))
+            {
 #>
-				<#=arg.Property.Name #> = <#=arg.ParameterName#> == null ? default(<#=propertyType #>) : ((long)<#=arg.ParameterName#>.Value.TotalSeconds),
+                <#=arg.Property.Name #> = <#=arg.ParameterName#> == null ? default(<#=propertyType #>) : ((long)<#=arg.ParameterName#>.Value.TotalSeconds),
 <#
-			}
-			else
-			{
+            }
+            else
+            {
 #>
-				<#=arg.Property.Name #> = <#=arg.ParameterName#><#=arg.Optional ? " ?? default(" + propertyType + ")" : "" #>,
+                <#=arg.Property.Name #> = <#=arg.ParameterName#><#=arg.Optional ? " ?? default(" + propertyType + ")" : "" #>,
 <#
-			}
+            }
 
-			if (arg.Optional)
-			{
+            if (arg.Optional)
+            {
 #>
-				<#=arg.Property.Name #>Specified = <#=arg.ParameterName #> != default(<#=parameterType#>),
+                <#=arg.Property.Name #>Specified = <#=arg.ParameterName #> != default(<#=parameterType#>),
 <#
-			}
-		}
+            }
+        }
 #>
             };
 
             var resp = await ExecuteRequest<<#=reqresp.RequestType.Name #>, <#=reqresp.ResponseType.Name #>>(request);
             return resp;
-		}
+        }
 
 <# 
-	}
+    }
 #>
     }
 }
