@@ -49,6 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssignQualification.cs" />
+    <Compile Include="ApproveRejectedAssignment.cs" />
+    <Compile Include="ApproveAssignment.cs" />
+    <Compile Include="CreateHIT.cs" />
     <Compile Include="DTO\AnswerKey.cs">
       <DependentUpon>AnswerKey.xsd</DependentUpon>
     </Compile>
