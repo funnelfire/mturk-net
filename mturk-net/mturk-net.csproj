@@ -32,6 +32,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>..\packages\Microsoft.Bcl.Immutable.1.0.34\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Extensions">
@@ -70,6 +73,11 @@
       <DependentUpon>QuestionFormAnswers.xsd</DependentUpon>
     </Compile>
     <Compile Include="DTO\RestHeader.cs" />
+    <Compile Include="Operations.generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Operations.tt</DependentUpon>
+    </Compile>
     <Compile Include="StringExtensions.cs" />
     <Compile Include="TurkClient.cs" />
     <Compile Include="TurkSerializer.cs" />
@@ -78,7 +86,9 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="DTO\AnswerKey.xsd">
       <SubType>Designer</SubType>
@@ -97,6 +107,10 @@
     </None>
     <None Include="DTO\QuestionFormAnswers.xsd">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Operations.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Operations.generated.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

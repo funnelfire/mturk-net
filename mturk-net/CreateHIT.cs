@@ -68,7 +68,7 @@ namespace MTurk
                 RequesterAnnotation = requesterAnnotation,
                 UniqueRequestToken = requestToken.ToString("N")
             };
-
+            
             PackQuestion(question, request);
 
             var resp = await ExecuteRequest<CreateHITRequest, CreateHITResponse>(request);

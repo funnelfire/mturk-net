@@ -1,0 +1,119 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Runtime" #>
+<#@ assembly name="$(TargetPath)" #>
+<#@ assembly name="$(ProjectDir)$(OutDir)System.Collections.Immutable.dll" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.CodeDom" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Collections.Immutable" #>
+<#@ import namespace="Microsoft.CSharp" #>
+<#@ import namespace="MTurk" #>
+<#@ import namespace="MTurk.Extensions" #>
+<#@ output extension=".generated.cs" #>
+using System;
+using System.Threading.Tasks;
+using MTurk.DTO;
+
+namespace MTurk
+{
+	partial class TurkClient
+	{
+<#
+    var compiler = new CSharpCodeProvider();
+
+
+	var types = typeof(TurkClient).Assembly.GetTypes()
+		.Where(t => t.Namespace != null && t.Namespace.StartsWith("MTurk.DTO"))
+		.ToImmutableHashSet();
+	var requests = types
+		.Where(t => t.Name.EndsWith("Request"))
+		.Select(t => new { RequestType = t, Name = t.Name.TrimEnd("Request") })
+		.Select(x => new { x.RequestType, x.Name, ResponseType = types.SingleOrDefault(t => t.Name == x.Name + "Response") })
+		.Where(x => x.ResponseType != null);
+
+	foreach (var reqresp in requests)
+	{
+		// create arg list
+		var props = reqresp.RequestType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+		var propNames = props.Select(x => x.Name).ToImmutableHashSet();
+		var args = props.Where(x => !x.Name.EndsWith("Specified"))
+			.OrderBy(x => propNames.Contains(x.Name + "Specified"))
+			.Select(p => 
+			{
+				var name = p.Name;
+				if (name.StartsWith("HIT"))
+					name = "hit" + name.Substring(3);
+				else
+					name = char.ToLower(name[0]) + name.Substring(1);
+				var type = p.PropertyType;
+				string suffix = "";
+
+				if (type == typeof(long) && name.EndsWith("InSeconds"))
+				{
+					name = name.TrimEnd("InSeconds");
+					type = typeof(TimeSpan);
+				}
+
+				var optional = propNames.Contains(p.Name + "Specified");
+				if (optional)
+				{
+					suffix = " = null";
+					if (p.PropertyType.IsValueType)
+						type = typeof(Nullable<>).MakeGenericType(type);
+				}
+
+				return new { Property = p, ParameterName = name, ParameterType = type, Suffix = suffix, Optional = optional };
+			});
+		var argString = string.Join(", ", args.Select(arg => string.Format("{0} {1}{2}", compiler.GetTypeOutput(new CodeTypeReference(arg.ParameterType)), arg.ParameterName, arg.Suffix)));
+#>
+        public async Task<<#=reqresp.ResponseType.Name #>> <#=reqresp.Name #>(<#=argString #>)
+		{
+			var request = new <#=reqresp.RequestType.Name #>
+            {
+<#
+		foreach (var arg in args)
+		{
+			var propertyType = compiler.GetTypeOutput(new CodeTypeReference(arg.Property.PropertyType));
+			var parameterType = compiler.GetTypeOutput(new CodeTypeReference(arg.ParameterType));
+
+			if (arg.ParameterType == typeof(TimeSpan))
+			{
+#>
+				<#=arg.Property.Name #> = ((long)<#=arg.ParameterName#>.TotalSeconds)<#=arg.Optional ? " ?? default(" + propertyType + ")" : "" #>,
+<#
+			}
+			else if (arg.ParameterType == typeof(TimeSpan?))
+			{
+#>
+				<#=arg.Property.Name #> = <#=arg.ParameterName#> == null ? default(<#=propertyType #>) : ((long)<#=arg.ParameterName#>.Value.TotalSeconds),
+<#
+			}
+			else
+			{
+#>
+				<#=arg.Property.Name #> = <#=arg.ParameterName#><#=arg.Optional ? " ?? default(" + propertyType + ")" : "" #>,
+<#
+			}
+
+			if (arg.Optional)
+			{
+#>
+				<#=arg.Property.Name #>Specified = <#=arg.ParameterName #> == default(<#=parameterType#>),
+<#
+			}
+		}
+#>
+            };
+
+            var resp = await ExecuteRequest<<#=reqresp.RequestType.Name #>, <#=reqresp.ResponseType.Name #>>(request);
+            return resp;
+		}
+
+<# 
+	}
+#>
+	}
+}

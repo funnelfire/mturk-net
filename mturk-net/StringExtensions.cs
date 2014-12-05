@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MTurk
+namespace MTurk.Extensions
 {
-    static class StringExtensions
+    public static class StringExtensions
     {
         /// <summary>
         /// Returns characters from the middle of a string.
