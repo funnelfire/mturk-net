@@ -11,7 +11,7 @@ namespace MTurk.Tests
     public class HIT
     {
         [Fact]
-        public async Task CreateHIT()
+        public async Task CreateAndDeleteHIT()
         {
             var client = new TurkClient(Credentials.AccessKey, Credentials.SecretKey, true);
             var resp = await client.CreateHIT("Test HIT", "A test HIT", new Price {Amount = 0.07M, CurrencyCode = "USD"},
@@ -24,6 +24,12 @@ namespace MTurk.Tests
 
             if (resp.HIT[0].Request.Errors != null && resp.HIT[0].Request.Errors.Length != 0)
                 Assert.False(true, string.Format("HIT operation error: [{0}] {1}", resp.HIT[0].Request.Errors[0].Code, resp.HIT[0].Request.Errors[0].Message));
+
+            var id = resp.HIT[0].HITId;
+            Assert.NotNull(id);
+
+            var disposeResp = await client.DisposeHIT(id, null);
+            Assert.Null(disposeResp.OperationRequest.Errors);
         }
     }
 }
