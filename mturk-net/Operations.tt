@@ -27,8 +27,8 @@ using MTurk.DTO;
 
 namespace MTurk
 {
-	partial class TurkClient
-	{
+    partial class TurkClient
+    {
 <#
     var compiler = new CSharpCodeProvider();
 
@@ -163,5 +163,5 @@ namespace MTurk
 <# 
 	}
 #>
-	}
+    }
 }

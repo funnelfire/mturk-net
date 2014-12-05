@@ -4,8 +4,8 @@ using MTurk.DTO;
 
 namespace MTurk
 {
-	partial class TurkClient
-	{
+    partial class TurkClient
+    {
         /// <summary>
         /// The SetHITAsReviewing operation updates the status of a HIT. If the status is Reviewable, this operation updates the status to Reviewing, or reverts a Reviewing HIT back to the Reviewable status.
         /// You can update only HITs with status Reviewable to status Reviewing. Similarly, you can revert only Reviewing HITs back to status Reviewable.
@@ -1111,5 +1111,5 @@ namespace MTurk
             return resp;
 		}
 
-	}
+    }
 }
