@@ -86,6 +86,9 @@ namespace MTurk
                 {
                     if (kv.Property.GetCustomAttribute<XmlIgnoreAttribute>(true) != null) continue;
 
+                    var specifier = props.SingleOrDefault(x => x.Name == kv.Property.Name + "Specified");
+                    if (specifier != null && !((bool)specifier.GetValue(obj))) continue;
+
                     var elementAttr = kv.Property.GetCustomAttribute<XmlElementAttribute>(true);
                     var name = elementAttr == null ? kv.Property.Name : elementAttr.ElementName;
 

@@ -15,7 +15,7 @@ namespace MTurk.Tests
         {
             var client = new TurkClient(Credentials.AccessKey, Credentials.SecretKey, true);
             var resp = await client.CreateHIT("Test HIT", "A test HIT", new Price {Amount = 0.07M, CurrencyCode = "USD"},
-                TimeSpan.FromDays(7), null, TimeSpan.FromDays(7), null,
+                TimeSpan.FromDays(7), null, null,
                 new ExternalQuestion {ExternalURL = "https://www.google.com/", FrameHeight = "100"},
                 TimeSpan.FromDays(7));
 

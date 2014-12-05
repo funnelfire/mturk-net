@@ -101,7 +101,7 @@ namespace MTurk
 			if (arg.Optional)
 			{
 #>
-				<#=arg.Property.Name #>Specified = <#=arg.ParameterName #> == default(<#=parameterType#>),
+				<#=arg.Property.Name #>Specified = <#=arg.ParameterName #> != default(<#=parameterType#>),
 <#
 			}
 		}
