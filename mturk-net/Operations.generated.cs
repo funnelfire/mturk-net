@@ -6,6 +6,46 @@ namespace MTurk
 {
 	partial class TurkClient
 	{
+        public async Task<DisposeQualificationTypeResponse> DisposeQualificationType(string qualificationTypeId)
+		{
+			var request = new DisposeQualificationTypeRequest
+            {
+				QualificationTypeId = qualificationTypeId,
+            };
+
+            var resp = await ExecuteRequest<DisposeQualificationTypeRequest, DisposeQualificationTypeResponse>(request);
+            return resp;
+		}
+
+        public async Task<GetQualificationTypeResponse> GetQualificationType(string qualificationTypeId, string[] responseGroup)
+		{
+			var request = new GetQualificationTypeRequest
+            {
+				QualificationTypeId = qualificationTypeId,
+				ResponseGroup = responseGroup,
+            };
+
+            var resp = await ExecuteRequest<GetQualificationTypeRequest, GetQualificationTypeResponse>(request);
+            return resp;
+		}
+
+        public async Task<AssignQualificationResponse> AssignQualification(string qualificationTypeId, string workerId, string[] responseGroup, System.Nullable<int> integerValue = null, System.Nullable<bool> sendNotification = null)
+		{
+			var request = new AssignQualificationRequest
+            {
+				QualificationTypeId = qualificationTypeId,
+				WorkerId = workerId,
+				ResponseGroup = responseGroup,
+				IntegerValue = integerValue ?? default(int),
+				IntegerValueSpecified = integerValue == default(System.Nullable<int>),
+				SendNotification = sendNotification ?? default(bool),
+				SendNotificationSpecified = sendNotification == default(System.Nullable<bool>),
+            };
+
+            var resp = await ExecuteRequest<AssignQualificationRequest, AssignQualificationResponse>(request);
+            return resp;
+		}
+
         public async Task<DisposeHITResponse> DisposeHIT(string hitId, string[] responseGroup)
 		{
 			var request = new DisposeHITRequest
@@ -18,15 +58,172 @@ namespace MTurk
             return resp;
 		}
 
-        public async Task<GetHITResponse> GetHIT(string hitId, string[] responseGroup)
+        public async Task<ApproveAssignmentResponse> ApproveAssignment(string assignmentId, string[] responseGroup, string requesterFeedback)
 		{
-			var request = new GetHITRequest
+			var request = new ApproveAssignmentRequest
             {
-				HITId = hitId,
+				AssignmentId = assignmentId,
+				ResponseGroup = responseGroup,
+				RequesterFeedback = requesterFeedback,
+            };
+
+            var resp = await ExecuteRequest<ApproveAssignmentRequest, ApproveAssignmentResponse>(request);
+            return resp;
+		}
+
+        public async Task<GetQualificationScoreResponse> GetQualificationScore(string qualificationTypeId, string subjectId, string[] responseGroup)
+		{
+			var request = new GetQualificationScoreRequest
+            {
+				QualificationTypeId = qualificationTypeId,
+				SubjectId = subjectId,
 				ResponseGroup = responseGroup,
             };
 
-            var resp = await ExecuteRequest<GetHITRequest, GetHITResponse>(request);
+            var resp = await ExecuteRequest<GetQualificationScoreRequest, GetQualificationScoreResponse>(request);
+            return resp;
+		}
+
+        public async Task<ChangeHITTypeOfHITResponse> ChangeHITTypeOfHIT(string hitId, string hitTypeId, string[] responseGroup)
+		{
+			var request = new ChangeHITTypeOfHITRequest
+            {
+				HITId = hitId,
+				HITTypeId = hitTypeId,
+				ResponseGroup = responseGroup,
+            };
+
+            var resp = await ExecuteRequest<ChangeHITTypeOfHITRequest, ChangeHITTypeOfHITResponse>(request);
+            return resp;
+		}
+
+        public async Task<SearchHITsResponse> SearchHITs(string[] responseGroup, System.Nullable<MTurk.DTO.SortDirection> sortDirection = null, System.Nullable<MTurk.DTO.SearchHITsSortProperty> sortProperty = null, System.Nullable<int> pageNumber = null, System.Nullable<int> pageSize = null)
+		{
+			var request = new SearchHITsRequest
+            {
+				ResponseGroup = responseGroup,
+				SortDirection = sortDirection ?? default(MTurk.DTO.SortDirection),
+				SortDirectionSpecified = sortDirection == default(System.Nullable<MTurk.DTO.SortDirection>),
+				SortProperty = sortProperty ?? default(MTurk.DTO.SearchHITsSortProperty),
+				SortPropertySpecified = sortProperty == default(System.Nullable<MTurk.DTO.SearchHITsSortProperty>),
+				PageNumber = pageNumber ?? default(int),
+				PageNumberSpecified = pageNumber == default(System.Nullable<int>),
+				PageSize = pageSize ?? default(int),
+				PageSizeSpecified = pageSize == default(System.Nullable<int>),
+            };
+
+            var resp = await ExecuteRequest<SearchHITsRequest, SearchHITsResponse>(request);
+            return resp;
+		}
+
+        public async Task<BlockWorkerResponse> BlockWorker(string workerId, string reason, string[] responseGroup)
+		{
+			var request = new BlockWorkerRequest
+            {
+				WorkerId = workerId,
+				Reason = reason,
+				ResponseGroup = responseGroup,
+            };
+
+            var resp = await ExecuteRequest<BlockWorkerRequest, BlockWorkerResponse>(request);
+            return resp;
+		}
+
+        public async Task<UpdateQualificationScoreResponse> UpdateQualificationScore(string qualificationTypeId, string subjectId, string[] responseGroup, System.Nullable<int> integerValue = null)
+		{
+			var request = new UpdateQualificationScoreRequest
+            {
+				QualificationTypeId = qualificationTypeId,
+				SubjectId = subjectId,
+				ResponseGroup = responseGroup,
+				IntegerValue = integerValue ?? default(int),
+				IntegerValueSpecified = integerValue == default(System.Nullable<int>),
+            };
+
+            var resp = await ExecuteRequest<UpdateQualificationScoreRequest, UpdateQualificationScoreResponse>(request);
+            return resp;
+		}
+
+        public async Task<GetHITsForQualificationTypeResponse> GetHITsForQualificationType(string qualificationTypeId, string[] responseGroup, System.Nullable<int> pageNumber = null, System.Nullable<int> pageSize = null)
+		{
+			var request = new GetHITsForQualificationTypeRequest
+            {
+				QualificationTypeId = qualificationTypeId,
+				ResponseGroup = responseGroup,
+				PageNumber = pageNumber ?? default(int),
+				PageNumberSpecified = pageNumber == default(System.Nullable<int>),
+				PageSize = pageSize ?? default(int),
+				PageSizeSpecified = pageSize == default(System.Nullable<int>),
+            };
+
+            var resp = await ExecuteRequest<GetHITsForQualificationTypeRequest, GetHITsForQualificationTypeResponse>(request);
+            return resp;
+		}
+
+        public async Task<GetReviewableHITsResponse> GetReviewableHITs(string hitTypeId, string[] responseGroup, System.Nullable<MTurk.DTO.ReviewableHITStatus> status = null, System.Nullable<MTurk.DTO.SortDirection> sortDirection = null, System.Nullable<MTurk.DTO.GetReviewableHITsSortProperty> sortProperty = null, System.Nullable<int> pageNumber = null, System.Nullable<int> pageSize = null)
+		{
+			var request = new GetReviewableHITsRequest
+            {
+				HITTypeId = hitTypeId,
+				ResponseGroup = responseGroup,
+				Status = status ?? default(MTurk.DTO.ReviewableHITStatus),
+				StatusSpecified = status == default(System.Nullable<MTurk.DTO.ReviewableHITStatus>),
+				SortDirection = sortDirection ?? default(MTurk.DTO.SortDirection),
+				SortDirectionSpecified = sortDirection == default(System.Nullable<MTurk.DTO.SortDirection>),
+				SortProperty = sortProperty ?? default(MTurk.DTO.GetReviewableHITsSortProperty),
+				SortPropertySpecified = sortProperty == default(System.Nullable<MTurk.DTO.GetReviewableHITsSortProperty>),
+				PageNumber = pageNumber ?? default(int),
+				PageNumberSpecified = pageNumber == default(System.Nullable<int>),
+				PageSize = pageSize ?? default(int),
+				PageSizeSpecified = pageSize == default(System.Nullable<int>),
+            };
+
+            var resp = await ExecuteRequest<GetReviewableHITsRequest, GetReviewableHITsResponse>(request);
+            return resp;
+		}
+
+        public async Task<GetRequesterWorkerStatisticResponse> GetRequesterWorkerStatistic(MTurk.DTO.RequesterStatistic statistic, string workerId, string[] responseGroup, System.Nullable<MTurk.DTO.TimePeriod> timePeriod = null, System.Nullable<int> count = null)
+		{
+			var request = new GetRequesterWorkerStatisticRequest
+            {
+				Statistic = statistic,
+				WorkerId = workerId,
+				ResponseGroup = responseGroup,
+				TimePeriod = timePeriod ?? default(MTurk.DTO.TimePeriod),
+				TimePeriodSpecified = timePeriod == default(System.Nullable<MTurk.DTO.TimePeriod>),
+				Count = count ?? default(int),
+				CountSpecified = count == default(System.Nullable<int>),
+            };
+
+            var resp = await ExecuteRequest<GetRequesterWorkerStatisticRequest, GetRequesterWorkerStatisticResponse>(request);
+            return resp;
+		}
+
+        public async Task<SetHITAsReviewingResponse> SetHITAsReviewing(string hitId, string[] responseGroup, System.Nullable<bool> revert = null)
+		{
+			var request = new SetHITAsReviewingRequest
+            {
+				HITId = hitId,
+				ResponseGroup = responseGroup,
+				Revert = revert ?? default(bool),
+				RevertSpecified = revert == default(System.Nullable<bool>),
+            };
+
+            var resp = await ExecuteRequest<SetHITAsReviewingRequest, SetHITAsReviewingResponse>(request);
+            return resp;
+		}
+
+        public async Task<SetHITTypeNotificationResponse> SetHITTypeNotification(string hitTypeId, MTurk.DTO.NotificationSpecification notification, System.Nullable<bool> active = null)
+		{
+			var request = new SetHITTypeNotificationRequest
+            {
+				HITTypeId = hitTypeId,
+				Notification = notification,
+				Active = active ?? default(bool),
+				ActiveSpecified = active == default(System.Nullable<bool>),
+            };
+
+            var resp = await ExecuteRequest<SetHITTypeNotificationRequest, SetHITTypeNotificationResponse>(request);
             return resp;
 		}
 
@@ -43,6 +240,105 @@ namespace MTurk
             };
 
             var resp = await ExecuteRequest<GrantBonusRequest, GrantBonusResponse>(request);
+            return resp;
+		}
+
+        public async Task<ExtendHITResponse> ExtendHIT(string hitId, string uniqueRequestToken, string[] responseGroup, System.Nullable<int> maxAssignmentsIncrement = null, System.Nullable<System.TimeSpan> expirationIncrement = null)
+		{
+			var request = new ExtendHITRequest
+            {
+				HITId = hitId,
+				UniqueRequestToken = uniqueRequestToken,
+				ResponseGroup = responseGroup,
+				MaxAssignmentsIncrement = maxAssignmentsIncrement ?? default(int),
+				MaxAssignmentsIncrementSpecified = maxAssignmentsIncrement == default(System.Nullable<int>),
+				ExpirationIncrementInSeconds = expirationIncrement == null ? default(long) : ((long)expirationIncrement.Value.TotalSeconds),
+				ExpirationIncrementInSecondsSpecified = expirationIncrement == default(System.Nullable<System.TimeSpan>),
+            };
+
+            var resp = await ExecuteRequest<ExtendHITRequest, ExtendHITResponse>(request);
+            return resp;
+		}
+
+        public async Task<GrantQualificationResponse> GrantQualification(string qualificationRequestId, string[] responseGroup, System.Nullable<int> integerValue = null)
+		{
+			var request = new GrantQualificationRequest
+            {
+				QualificationRequestId = qualificationRequestId,
+				ResponseGroup = responseGroup,
+				IntegerValue = integerValue ?? default(int),
+				IntegerValueSpecified = integerValue == default(System.Nullable<int>),
+            };
+
+            var resp = await ExecuteRequest<GrantQualificationRequest, GrantQualificationResponse>(request);
+            return resp;
+		}
+
+        public async Task<SearchQualificationTypesResponse> SearchQualificationTypes(string query, bool mustBeRequestable, string[] responseGroup, System.Nullable<bool> mustBeOwnedByCaller = null, System.Nullable<MTurk.DTO.SortDirection> sortDirection = null, System.Nullable<MTurk.DTO.SearchQualificationTypesSortProperty> sortProperty = null, System.Nullable<int> pageNumber = null, System.Nullable<int> pageSize = null)
+		{
+			var request = new SearchQualificationTypesRequest
+            {
+				Query = query,
+				MustBeRequestable = mustBeRequestable,
+				ResponseGroup = responseGroup,
+				MustBeOwnedByCaller = mustBeOwnedByCaller ?? default(bool),
+				MustBeOwnedByCallerSpecified = mustBeOwnedByCaller == default(System.Nullable<bool>),
+				SortDirection = sortDirection ?? default(MTurk.DTO.SortDirection),
+				SortDirectionSpecified = sortDirection == default(System.Nullable<MTurk.DTO.SortDirection>),
+				SortProperty = sortProperty ?? default(MTurk.DTO.SearchQualificationTypesSortProperty),
+				SortPropertySpecified = sortProperty == default(System.Nullable<MTurk.DTO.SearchQualificationTypesSortProperty>),
+				PageNumber = pageNumber ?? default(int),
+				PageNumberSpecified = pageNumber == default(System.Nullable<int>),
+				PageSize = pageSize ?? default(int),
+				PageSizeSpecified = pageSize == default(System.Nullable<int>),
+            };
+
+            var resp = await ExecuteRequest<SearchQualificationTypesRequest, SearchQualificationTypesResponse>(request);
+            return resp;
+		}
+
+        public async Task<GetQualificationsForQualificationTypeResponse> GetQualificationsForQualificationType(string qualificationTypeId, string[] responseGroup, System.Nullable<MTurk.DTO.QualificationStatus> status = null, System.Nullable<int> pageNumber = null, System.Nullable<int> pageSize = null)
+		{
+			var request = new GetQualificationsForQualificationTypeRequest
+            {
+				QualificationTypeId = qualificationTypeId,
+				ResponseGroup = responseGroup,
+				Status = status ?? default(MTurk.DTO.QualificationStatus),
+				StatusSpecified = status == default(System.Nullable<MTurk.DTO.QualificationStatus>),
+				PageNumber = pageNumber ?? default(int),
+				PageNumberSpecified = pageNumber == default(System.Nullable<int>),
+				PageSize = pageSize ?? default(int),
+				PageSizeSpecified = pageSize == default(System.Nullable<int>),
+            };
+
+            var resp = await ExecuteRequest<GetQualificationsForQualificationTypeRequest, GetQualificationsForQualificationTypeResponse>(request);
+            return resp;
+		}
+
+        public async Task<RevokeQualificationResponse> RevokeQualification(string subjectId, string qualificationTypeId, string reason, string[] responseGroup)
+		{
+			var request = new RevokeQualificationRequest
+            {
+				SubjectId = subjectId,
+				QualificationTypeId = qualificationTypeId,
+				Reason = reason,
+				ResponseGroup = responseGroup,
+            };
+
+            var resp = await ExecuteRequest<RevokeQualificationRequest, RevokeQualificationResponse>(request);
+            return resp;
+		}
+
+        public async Task<SendTestEventNotificationResponse> SendTestEventNotification(MTurk.DTO.NotificationSpecification notification, System.Nullable<MTurk.DTO.EventType> testEventType = null)
+		{
+			var request = new SendTestEventNotificationRequest
+            {
+				Notification = notification,
+				TestEventType = testEventType ?? default(MTurk.DTO.EventType),
+				TestEventTypeSpecified = testEventType == default(System.Nullable<MTurk.DTO.EventType>),
+            };
+
+            var resp = await ExecuteRequest<SendTestEventNotificationRequest, SendTestEventNotificationResponse>(request);
             return resp;
 		}
 
@@ -88,21 +384,30 @@ namespace MTurk
             return resp;
 		}
 
-        public async Task<GetQualificationsForQualificationTypeResponse> GetQualificationsForQualificationType(string qualificationTypeId, string[] responseGroup, System.Nullable<MTurk.DTO.QualificationStatus> status = null, System.Nullable<int> pageNumber = null, System.Nullable<int> pageSize = null)
+        public async Task<GetHITResponse> GetHIT(string hitId, string[] responseGroup)
 		{
-			var request = new GetQualificationsForQualificationTypeRequest
+			var request = new GetHITRequest
             {
-				QualificationTypeId = qualificationTypeId,
+				HITId = hitId,
 				ResponseGroup = responseGroup,
-				Status = status ?? default(MTurk.DTO.QualificationStatus),
-				StatusSpecified = status == default(System.Nullable<MTurk.DTO.QualificationStatus>),
+            };
+
+            var resp = await ExecuteRequest<GetHITRequest, GetHITResponse>(request);
+            return resp;
+		}
+
+        public async Task<GetBlockedWorkersResponse> GetBlockedWorkers(string[] responseGroup, System.Nullable<int> pageNumber = null, System.Nullable<int> pageSize = null)
+		{
+			var request = new GetBlockedWorkersRequest
+            {
+				ResponseGroup = responseGroup,
 				PageNumber = pageNumber ?? default(int),
 				PageNumberSpecified = pageNumber == default(System.Nullable<int>),
 				PageSize = pageSize ?? default(int),
 				PageSizeSpecified = pageSize == default(System.Nullable<int>),
             };
 
-            var resp = await ExecuteRequest<GetQualificationsForQualificationTypeRequest, GetQualificationsForQualificationTypeResponse>(request);
+            var resp = await ExecuteRequest<GetBlockedWorkersRequest, GetBlockedWorkersResponse>(request);
             return resp;
 		}
 
@@ -123,6 +428,19 @@ namespace MTurk
             };
 
             var resp = await ExecuteRequest<GetQualificationRequestsRequest, GetQualificationRequestsResponse>(request);
+            return resp;
+		}
+
+        public async Task<ApproveRejectedAssignmentResponse> ApproveRejectedAssignment(string assignmentId, string[] responseGroup, string requesterFeedback)
+		{
+			var request = new ApproveRejectedAssignmentRequest
+            {
+				AssignmentId = assignmentId,
+				ResponseGroup = responseGroup,
+				RequesterFeedback = requesterFeedback,
+            };
+
+            var resp = await ExecuteRequest<ApproveRejectedAssignmentRequest, ApproveRejectedAssignmentResponse>(request);
             return resp;
 		}
 
@@ -152,91 +470,32 @@ namespace MTurk
             return resp;
 		}
 
-        public async Task<GetFileUploadURLResponse> GetFileUploadURL(string assignmentId, string questionIdentifier)
+        public async Task<RejectAssignmentResponse> RejectAssignment(string assignmentId, string[] responseGroup, string requesterFeedback)
 		{
-			var request = new GetFileUploadURLRequest
-            {
-				AssignmentId = assignmentId,
-				QuestionIdentifier = questionIdentifier,
-            };
-
-            var resp = await ExecuteRequest<GetFileUploadURLRequest, GetFileUploadURLResponse>(request);
-            return resp;
-		}
-
-        public async Task<GetAssignmentResponse> GetAssignment(string assignmentId, string[] responseGroup)
-		{
-			var request = new GetAssignmentRequest
+			var request = new RejectAssignmentRequest
             {
 				AssignmentId = assignmentId,
 				ResponseGroup = responseGroup,
+				RequesterFeedback = requesterFeedback,
             };
 
-            var resp = await ExecuteRequest<GetAssignmentRequest, GetAssignmentResponse>(request);
+            var resp = await ExecuteRequest<RejectAssignmentRequest, RejectAssignmentResponse>(request);
             return resp;
 		}
 
-        public async Task<SearchHITsResponse> SearchHITs(string[] responseGroup, System.Nullable<MTurk.DTO.SortDirection> sortDirection = null, System.Nullable<MTurk.DTO.SearchHITsSortProperty> sortProperty = null, System.Nullable<int> pageNumber = null, System.Nullable<int> pageSize = null)
+        public async Task<GetRequesterStatisticResponse> GetRequesterStatistic(MTurk.DTO.RequesterStatistic statistic, string[] responseGroup, System.Nullable<MTurk.DTO.TimePeriod> timePeriod = null, System.Nullable<int> count = null)
 		{
-			var request = new SearchHITsRequest
+			var request = new GetRequesterStatisticRequest
             {
+				Statistic = statistic,
 				ResponseGroup = responseGroup,
-				SortDirection = sortDirection ?? default(MTurk.DTO.SortDirection),
-				SortDirectionSpecified = sortDirection == default(System.Nullable<MTurk.DTO.SortDirection>),
-				SortProperty = sortProperty ?? default(MTurk.DTO.SearchHITsSortProperty),
-				SortPropertySpecified = sortProperty == default(System.Nullable<MTurk.DTO.SearchHITsSortProperty>),
-				PageNumber = pageNumber ?? default(int),
-				PageNumberSpecified = pageNumber == default(System.Nullable<int>),
-				PageSize = pageSize ?? default(int),
-				PageSizeSpecified = pageSize == default(System.Nullable<int>),
+				TimePeriod = timePeriod ?? default(MTurk.DTO.TimePeriod),
+				TimePeriodSpecified = timePeriod == default(System.Nullable<MTurk.DTO.TimePeriod>),
+				Count = count ?? default(int),
+				CountSpecified = count == default(System.Nullable<int>),
             };
 
-            var resp = await ExecuteRequest<SearchHITsRequest, SearchHITsResponse>(request);
-            return resp;
-		}
-
-        public async Task<GetReviewableHITsResponse> GetReviewableHITs(string hitTypeId, string[] responseGroup, System.Nullable<MTurk.DTO.ReviewableHITStatus> status = null, System.Nullable<MTurk.DTO.SortDirection> sortDirection = null, System.Nullable<MTurk.DTO.GetReviewableHITsSortProperty> sortProperty = null, System.Nullable<int> pageNumber = null, System.Nullable<int> pageSize = null)
-		{
-			var request = new GetReviewableHITsRequest
-            {
-				HITTypeId = hitTypeId,
-				ResponseGroup = responseGroup,
-				Status = status ?? default(MTurk.DTO.ReviewableHITStatus),
-				StatusSpecified = status == default(System.Nullable<MTurk.DTO.ReviewableHITStatus>),
-				SortDirection = sortDirection ?? default(MTurk.DTO.SortDirection),
-				SortDirectionSpecified = sortDirection == default(System.Nullable<MTurk.DTO.SortDirection>),
-				SortProperty = sortProperty ?? default(MTurk.DTO.GetReviewableHITsSortProperty),
-				SortPropertySpecified = sortProperty == default(System.Nullable<MTurk.DTO.GetReviewableHITsSortProperty>),
-				PageNumber = pageNumber ?? default(int),
-				PageNumberSpecified = pageNumber == default(System.Nullable<int>),
-				PageSize = pageSize ?? default(int),
-				PageSizeSpecified = pageSize == default(System.Nullable<int>),
-            };
-
-            var resp = await ExecuteRequest<GetReviewableHITsRequest, GetReviewableHITsResponse>(request);
-            return resp;
-		}
-
-        public async Task<SearchQualificationTypesResponse> SearchQualificationTypes(string query, bool mustBeRequestable, string[] responseGroup, System.Nullable<bool> mustBeOwnedByCaller = null, System.Nullable<MTurk.DTO.SortDirection> sortDirection = null, System.Nullable<MTurk.DTO.SearchQualificationTypesSortProperty> sortProperty = null, System.Nullable<int> pageNumber = null, System.Nullable<int> pageSize = null)
-		{
-			var request = new SearchQualificationTypesRequest
-            {
-				Query = query,
-				MustBeRequestable = mustBeRequestable,
-				ResponseGroup = responseGroup,
-				MustBeOwnedByCaller = mustBeOwnedByCaller ?? default(bool),
-				MustBeOwnedByCallerSpecified = mustBeOwnedByCaller == default(System.Nullable<bool>),
-				SortDirection = sortDirection ?? default(MTurk.DTO.SortDirection),
-				SortDirectionSpecified = sortDirection == default(System.Nullable<MTurk.DTO.SortDirection>),
-				SortProperty = sortProperty ?? default(MTurk.DTO.SearchQualificationTypesSortProperty),
-				SortPropertySpecified = sortProperty == default(System.Nullable<MTurk.DTO.SearchQualificationTypesSortProperty>),
-				PageNumber = pageNumber ?? default(int),
-				PageNumberSpecified = pageNumber == default(System.Nullable<int>),
-				PageSize = pageSize ?? default(int),
-				PageSizeSpecified = pageSize == default(System.Nullable<int>),
-            };
-
-            var resp = await ExecuteRequest<SearchQualificationTypesRequest, SearchQualificationTypesResponse>(request);
+            var resp = await ExecuteRequest<GetRequesterStatisticRequest, GetRequesterStatisticResponse>(request);
             return resp;
 		}
 
@@ -257,30 +516,29 @@ namespace MTurk
             return resp;
 		}
 
-        public async Task<GetQualificationScoreResponse> GetQualificationScore(string qualificationTypeId, string subjectId, string[] responseGroup)
+        public async Task<ForceExpireHITResponse> ForceExpireHIT(string hitId, string[] responseGroup)
 		{
-			var request = new GetQualificationScoreRequest
+			var request = new ForceExpireHITRequest
             {
-				QualificationTypeId = qualificationTypeId,
-				SubjectId = subjectId,
+				HITId = hitId,
 				ResponseGroup = responseGroup,
             };
 
-            var resp = await ExecuteRequest<GetQualificationScoreRequest, GetQualificationScoreResponse>(request);
+            var resp = await ExecuteRequest<ForceExpireHITRequest, ForceExpireHITResponse>(request);
             return resp;
 		}
 
-        public async Task<GrantQualificationResponse> GrantQualification(string qualificationRequestId, string[] responseGroup, System.Nullable<int> integerValue = null)
+        public async Task<NotifyWorkersResponse> NotifyWorkers(string subject, string messageText, string[] workerId, string[] responseGroup)
 		{
-			var request = new GrantQualificationRequest
+			var request = new NotifyWorkersRequest
             {
-				QualificationRequestId = qualificationRequestId,
+				Subject = subject,
+				MessageText = messageText,
+				WorkerId = workerId,
 				ResponseGroup = responseGroup,
-				IntegerValue = integerValue ?? default(int),
-				IntegerValueSpecified = integerValue == default(System.Nullable<int>),
             };
 
-            var resp = await ExecuteRequest<GrantQualificationRequest, GrantQualificationResponse>(request);
+            var resp = await ExecuteRequest<NotifyWorkersRequest, NotifyWorkersResponse>(request);
             return resp;
 		}
 
@@ -303,224 +561,42 @@ namespace MTurk
             return resp;
 		}
 
-        public async Task<GetRequesterStatisticResponse> GetRequesterStatistic(MTurk.DTO.RequesterStatistic statistic, string[] responseGroup, System.Nullable<MTurk.DTO.TimePeriod> timePeriod = null, System.Nullable<int> count = null)
+        public async Task<CreateQualificationTypeResponse> CreateQualificationType(string name, string keywords, string description, string test, string answerKey, string[] responseGroup, System.Nullable<MTurk.DTO.QualificationTypeStatus> qualificationTypeStatus = null, System.Nullable<System.TimeSpan> retryDelay = null, System.Nullable<System.TimeSpan> testDuration = null, System.Nullable<bool> autoGranted = null, System.Nullable<int> autoGrantedValue = null)
 		{
-			var request = new GetRequesterStatisticRequest
+			var request = new CreateQualificationTypeRequest
             {
-				Statistic = statistic,
+				Name = name,
+				Keywords = keywords,
+				Description = description,
+				Test = test,
+				AnswerKey = answerKey,
 				ResponseGroup = responseGroup,
-				TimePeriod = timePeriod ?? default(MTurk.DTO.TimePeriod),
-				TimePeriodSpecified = timePeriod == default(System.Nullable<MTurk.DTO.TimePeriod>),
-				Count = count ?? default(int),
-				CountSpecified = count == default(System.Nullable<int>),
+				QualificationTypeStatus = qualificationTypeStatus ?? default(MTurk.DTO.QualificationTypeStatus),
+				QualificationTypeStatusSpecified = qualificationTypeStatus == default(System.Nullable<MTurk.DTO.QualificationTypeStatus>),
+				RetryDelayInSeconds = retryDelay == null ? default(long) : ((long)retryDelay.Value.TotalSeconds),
+				RetryDelayInSecondsSpecified = retryDelay == default(System.Nullable<System.TimeSpan>),
+				TestDurationInSeconds = testDuration == null ? default(long) : ((long)testDuration.Value.TotalSeconds),
+				TestDurationInSecondsSpecified = testDuration == default(System.Nullable<System.TimeSpan>),
+				AutoGranted = autoGranted ?? default(bool),
+				AutoGrantedSpecified = autoGranted == default(System.Nullable<bool>),
+				AutoGrantedValue = autoGrantedValue ?? default(int),
+				AutoGrantedValueSpecified = autoGrantedValue == default(System.Nullable<int>),
             };
 
-            var resp = await ExecuteRequest<GetRequesterStatisticRequest, GetRequesterStatisticResponse>(request);
+            var resp = await ExecuteRequest<CreateQualificationTypeRequest, CreateQualificationTypeResponse>(request);
             return resp;
 		}
 
-        public async Task<GetHITsForQualificationTypeResponse> GetHITsForQualificationType(string qualificationTypeId, string[] responseGroup, System.Nullable<int> pageNumber = null, System.Nullable<int> pageSize = null)
+        public async Task<UnblockWorkerResponse> UnblockWorker(string workerId, string reason, string[] responseGroup)
 		{
-			var request = new GetHITsForQualificationTypeRequest
+			var request = new UnblockWorkerRequest
             {
-				QualificationTypeId = qualificationTypeId,
-				ResponseGroup = responseGroup,
-				PageNumber = pageNumber ?? default(int),
-				PageNumberSpecified = pageNumber == default(System.Nullable<int>),
-				PageSize = pageSize ?? default(int),
-				PageSizeSpecified = pageSize == default(System.Nullable<int>),
-            };
-
-            var resp = await ExecuteRequest<GetHITsForQualificationTypeRequest, GetHITsForQualificationTypeResponse>(request);
-            return resp;
-		}
-
-        public async Task<SendTestEventNotificationResponse> SendTestEventNotification(MTurk.DTO.NotificationSpecification notification, System.Nullable<MTurk.DTO.EventType> testEventType = null)
-		{
-			var request = new SendTestEventNotificationRequest
-            {
-				Notification = notification,
-				TestEventType = testEventType ?? default(MTurk.DTO.EventType),
-				TestEventTypeSpecified = testEventType == default(System.Nullable<MTurk.DTO.EventType>),
-            };
-
-            var resp = await ExecuteRequest<SendTestEventNotificationRequest, SendTestEventNotificationResponse>(request);
-            return resp;
-		}
-
-        public async Task<SetHITAsReviewingResponse> SetHITAsReviewing(string hitId, string[] responseGroup, System.Nullable<bool> revert = null)
-		{
-			var request = new SetHITAsReviewingRequest
-            {
-				HITId = hitId,
-				ResponseGroup = responseGroup,
-				Revert = revert ?? default(bool),
-				RevertSpecified = revert == default(System.Nullable<bool>),
-            };
-
-            var resp = await ExecuteRequest<SetHITAsReviewingRequest, SetHITAsReviewingResponse>(request);
-            return resp;
-		}
-
-        public async Task<AssignQualificationResponse> AssignQualification(string qualificationTypeId, string workerId, string[] responseGroup, System.Nullable<int> integerValue = null, System.Nullable<bool> sendNotification = null)
-		{
-			var request = new AssignQualificationRequest
-            {
-				QualificationTypeId = qualificationTypeId,
 				WorkerId = workerId,
-				ResponseGroup = responseGroup,
-				IntegerValue = integerValue ?? default(int),
-				IntegerValueSpecified = integerValue == default(System.Nullable<int>),
-				SendNotification = sendNotification ?? default(bool),
-				SendNotificationSpecified = sendNotification == default(System.Nullable<bool>),
-            };
-
-            var resp = await ExecuteRequest<AssignQualificationRequest, AssignQualificationResponse>(request);
-            return resp;
-		}
-
-        public async Task<ExtendHITResponse> ExtendHIT(string hitId, string uniqueRequestToken, string[] responseGroup, System.Nullable<int> maxAssignmentsIncrement = null, System.Nullable<System.TimeSpan> expirationIncrement = null)
-		{
-			var request = new ExtendHITRequest
-            {
-				HITId = hitId,
-				UniqueRequestToken = uniqueRequestToken,
-				ResponseGroup = responseGroup,
-				MaxAssignmentsIncrement = maxAssignmentsIncrement ?? default(int),
-				MaxAssignmentsIncrementSpecified = maxAssignmentsIncrement == default(System.Nullable<int>),
-				ExpirationIncrementInSeconds = expirationIncrement == null ? default(long) : ((long)expirationIncrement.Value.TotalSeconds),
-				ExpirationIncrementInSecondsSpecified = expirationIncrement == default(System.Nullable<System.TimeSpan>),
-            };
-
-            var resp = await ExecuteRequest<ExtendHITRequest, ExtendHITResponse>(request);
-            return resp;
-		}
-
-        public async Task<GetBlockedWorkersResponse> GetBlockedWorkers(string[] responseGroup, System.Nullable<int> pageNumber = null, System.Nullable<int> pageSize = null)
-		{
-			var request = new GetBlockedWorkersRequest
-            {
-				ResponseGroup = responseGroup,
-				PageNumber = pageNumber ?? default(int),
-				PageNumberSpecified = pageNumber == default(System.Nullable<int>),
-				PageSize = pageSize ?? default(int),
-				PageSizeSpecified = pageSize == default(System.Nullable<int>),
-            };
-
-            var resp = await ExecuteRequest<GetBlockedWorkersRequest, GetBlockedWorkersResponse>(request);
-            return resp;
-		}
-
-        public async Task<ApproveRejectedAssignmentResponse> ApproveRejectedAssignment(string assignmentId, string[] responseGroup, string requesterFeedback)
-		{
-			var request = new ApproveRejectedAssignmentRequest
-            {
-				AssignmentId = assignmentId,
-				ResponseGroup = responseGroup,
-				RequesterFeedback = requesterFeedback,
-            };
-
-            var resp = await ExecuteRequest<ApproveRejectedAssignmentRequest, ApproveRejectedAssignmentResponse>(request);
-            return resp;
-		}
-
-        public async Task<RevokeQualificationResponse> RevokeQualification(string subjectId, string qualificationTypeId, string reason, string[] responseGroup)
-		{
-			var request = new RevokeQualificationRequest
-            {
-				SubjectId = subjectId,
-				QualificationTypeId = qualificationTypeId,
 				Reason = reason,
 				ResponseGroup = responseGroup,
             };
 
-            var resp = await ExecuteRequest<RevokeQualificationRequest, RevokeQualificationResponse>(request);
-            return resp;
-		}
-
-        public async Task<GetRequesterWorkerStatisticResponse> GetRequesterWorkerStatistic(MTurk.DTO.RequesterStatistic statistic, string workerId, string[] responseGroup, System.Nullable<MTurk.DTO.TimePeriod> timePeriod = null, System.Nullable<int> count = null)
-		{
-			var request = new GetRequesterWorkerStatisticRequest
-            {
-				Statistic = statistic,
-				WorkerId = workerId,
-				ResponseGroup = responseGroup,
-				TimePeriod = timePeriod ?? default(MTurk.DTO.TimePeriod),
-				TimePeriodSpecified = timePeriod == default(System.Nullable<MTurk.DTO.TimePeriod>),
-				Count = count ?? default(int),
-				CountSpecified = count == default(System.Nullable<int>),
-            };
-
-            var resp = await ExecuteRequest<GetRequesterWorkerStatisticRequest, GetRequesterWorkerStatisticResponse>(request);
-            return resp;
-		}
-
-        public async Task<CreateHITResponse> CreateHIT(string hitTypeId, System.TimeSpan lifetime, MTurk.DTO.Price reward, string title, string keywords, string description, string question, string requesterAnnotation, MTurk.DTO.QualificationRequirement[] qualificationRequirement, string uniqueRequestToken, MTurk.DTO.ReviewPolicy assignmentReviewPolicy, MTurk.DTO.ReviewPolicy hitReviewPolicy, string hitLayoutId, MTurk.DTO.HITLayoutParameter[] hitLayoutParameter, string[] responseGroup, System.Nullable<int> maxAssignments = null, System.Nullable<System.TimeSpan> autoApprovalDelay = null, System.Nullable<System.TimeSpan> assignmentDuration = null)
-		{
-			var request = new CreateHITRequest
-            {
-				HITTypeId = hitTypeId,
-				LifetimeInSeconds = ((long)lifetime.TotalSeconds),
-				Reward = reward,
-				Title = title,
-				Keywords = keywords,
-				Description = description,
-				Question = question,
-				RequesterAnnotation = requesterAnnotation,
-				QualificationRequirement = qualificationRequirement,
-				UniqueRequestToken = uniqueRequestToken,
-				AssignmentReviewPolicy = assignmentReviewPolicy,
-				HITReviewPolicy = hitReviewPolicy,
-				HITLayoutId = hitLayoutId,
-				HITLayoutParameter = hitLayoutParameter,
-				ResponseGroup = responseGroup,
-				MaxAssignments = maxAssignments ?? default(int),
-				MaxAssignmentsSpecified = maxAssignments == default(System.Nullable<int>),
-				AutoApprovalDelayInSeconds = autoApprovalDelay == null ? default(long) : ((long)autoApprovalDelay.Value.TotalSeconds),
-				AutoApprovalDelayInSecondsSpecified = autoApprovalDelay == default(System.Nullable<System.TimeSpan>),
-				AssignmentDurationInSeconds = assignmentDuration == null ? default(long) : ((long)assignmentDuration.Value.TotalSeconds),
-				AssignmentDurationInSecondsSpecified = assignmentDuration == default(System.Nullable<System.TimeSpan>),
-            };
-
-            var resp = await ExecuteRequest<CreateHITRequest, CreateHITResponse>(request);
-            return resp;
-		}
-
-        public async Task<DisposeQualificationTypeResponse> DisposeQualificationType(string qualificationTypeId)
-		{
-			var request = new DisposeQualificationTypeRequest
-            {
-				QualificationTypeId = qualificationTypeId,
-            };
-
-            var resp = await ExecuteRequest<DisposeQualificationTypeRequest, DisposeQualificationTypeResponse>(request);
-            return resp;
-		}
-
-        public async Task<NotifyWorkersResponse> NotifyWorkers(string subject, string messageText, string[] workerId, string[] responseGroup)
-		{
-			var request = new NotifyWorkersRequest
-            {
-				Subject = subject,
-				MessageText = messageText,
-				WorkerId = workerId,
-				ResponseGroup = responseGroup,
-            };
-
-            var resp = await ExecuteRequest<NotifyWorkersRequest, NotifyWorkersResponse>(request);
-            return resp;
-		}
-
-        public async Task<RejectAssignmentResponse> RejectAssignment(string assignmentId, string[] responseGroup, string requesterFeedback)
-		{
-			var request = new RejectAssignmentRequest
-            {
-				AssignmentId = assignmentId,
-				ResponseGroup = responseGroup,
-				RequesterFeedback = requesterFeedback,
-            };
-
-            var resp = await ExecuteRequest<RejectAssignmentRequest, RejectAssignmentResponse>(request);
+            var resp = await ExecuteRequest<UnblockWorkerRequest, UnblockWorkerResponse>(request);
             return resp;
 		}
 
@@ -549,81 +625,27 @@ namespace MTurk
             return resp;
 		}
 
-        public async Task<UpdateQualificationScoreResponse> UpdateQualificationScore(string qualificationTypeId, string subjectId, string[] responseGroup, System.Nullable<int> integerValue = null)
+        public async Task<GetFileUploadURLResponse> GetFileUploadURL(string assignmentId, string questionIdentifier)
 		{
-			var request = new UpdateQualificationScoreRequest
+			var request = new GetFileUploadURLRequest
             {
-				QualificationTypeId = qualificationTypeId,
-				SubjectId = subjectId,
-				ResponseGroup = responseGroup,
-				IntegerValue = integerValue ?? default(int),
-				IntegerValueSpecified = integerValue == default(System.Nullable<int>),
+				AssignmentId = assignmentId,
+				QuestionIdentifier = questionIdentifier,
             };
 
-            var resp = await ExecuteRequest<UpdateQualificationScoreRequest, UpdateQualificationScoreResponse>(request);
+            var resp = await ExecuteRequest<GetFileUploadURLRequest, GetFileUploadURLResponse>(request);
             return resp;
 		}
 
-        public async Task<UnblockWorkerResponse> UnblockWorker(string workerId, string reason, string[] responseGroup)
+        public async Task<GetAssignmentResponse> GetAssignment(string assignmentId, string[] responseGroup)
 		{
-			var request = new UnblockWorkerRequest
-            {
-				WorkerId = workerId,
-				Reason = reason,
-				ResponseGroup = responseGroup,
-            };
-
-            var resp = await ExecuteRequest<UnblockWorkerRequest, UnblockWorkerResponse>(request);
-            return resp;
-		}
-
-        public async Task<ForceExpireHITResponse> ForceExpireHIT(string hitId, string[] responseGroup)
-		{
-			var request = new ForceExpireHITRequest
-            {
-				HITId = hitId,
-				ResponseGroup = responseGroup,
-            };
-
-            var resp = await ExecuteRequest<ForceExpireHITRequest, ForceExpireHITResponse>(request);
-            return resp;
-		}
-
-        public async Task<GetQualificationTypeResponse> GetQualificationType(string qualificationTypeId, string[] responseGroup)
-		{
-			var request = new GetQualificationTypeRequest
-            {
-				QualificationTypeId = qualificationTypeId,
-				ResponseGroup = responseGroup,
-            };
-
-            var resp = await ExecuteRequest<GetQualificationTypeRequest, GetQualificationTypeResponse>(request);
-            return resp;
-		}
-
-        public async Task<ApproveAssignmentResponse> ApproveAssignment(string assignmentId, string[] responseGroup, string requesterFeedback)
-		{
-			var request = new ApproveAssignmentRequest
+			var request = new GetAssignmentRequest
             {
 				AssignmentId = assignmentId,
 				ResponseGroup = responseGroup,
-				RequesterFeedback = requesterFeedback,
             };
 
-            var resp = await ExecuteRequest<ApproveAssignmentRequest, ApproveAssignmentResponse>(request);
-            return resp;
-		}
-
-        public async Task<ChangeHITTypeOfHITResponse> ChangeHITTypeOfHIT(string hitId, string hitTypeId, string[] responseGroup)
-		{
-			var request = new ChangeHITTypeOfHITRequest
-            {
-				HITId = hitId,
-				HITTypeId = hitTypeId,
-				ResponseGroup = responseGroup,
-            };
-
-            var resp = await ExecuteRequest<ChangeHITTypeOfHITRequest, ChangeHITTypeOfHITResponse>(request);
+            var resp = await ExecuteRequest<GetAssignmentRequest, GetAssignmentResponse>(request);
             return resp;
 		}
 
@@ -636,59 +658,6 @@ namespace MTurk
             };
 
             var resp = await ExecuteRequest<GetAccountBalanceRequest, GetAccountBalanceResponse>(request);
-            return resp;
-		}
-
-        public async Task<SetHITTypeNotificationResponse> SetHITTypeNotification(string hitTypeId, MTurk.DTO.NotificationSpecification notification, System.Nullable<bool> active = null)
-		{
-			var request = new SetHITTypeNotificationRequest
-            {
-				HITTypeId = hitTypeId,
-				Notification = notification,
-				Active = active ?? default(bool),
-				ActiveSpecified = active == default(System.Nullable<bool>),
-            };
-
-            var resp = await ExecuteRequest<SetHITTypeNotificationRequest, SetHITTypeNotificationResponse>(request);
-            return resp;
-		}
-
-        public async Task<BlockWorkerResponse> BlockWorker(string workerId, string reason, string[] responseGroup)
-		{
-			var request = new BlockWorkerRequest
-            {
-				WorkerId = workerId,
-				Reason = reason,
-				ResponseGroup = responseGroup,
-            };
-
-            var resp = await ExecuteRequest<BlockWorkerRequest, BlockWorkerResponse>(request);
-            return resp;
-		}
-
-        public async Task<CreateQualificationTypeResponse> CreateQualificationType(string name, string keywords, string description, string test, string answerKey, string[] responseGroup, System.Nullable<MTurk.DTO.QualificationTypeStatus> qualificationTypeStatus = null, System.Nullable<System.TimeSpan> retryDelay = null, System.Nullable<System.TimeSpan> testDuration = null, System.Nullable<bool> autoGranted = null, System.Nullable<int> autoGrantedValue = null)
-		{
-			var request = new CreateQualificationTypeRequest
-            {
-				Name = name,
-				Keywords = keywords,
-				Description = description,
-				Test = test,
-				AnswerKey = answerKey,
-				ResponseGroup = responseGroup,
-				QualificationTypeStatus = qualificationTypeStatus ?? default(MTurk.DTO.QualificationTypeStatus),
-				QualificationTypeStatusSpecified = qualificationTypeStatus == default(System.Nullable<MTurk.DTO.QualificationTypeStatus>),
-				RetryDelayInSeconds = retryDelay == null ? default(long) : ((long)retryDelay.Value.TotalSeconds),
-				RetryDelayInSecondsSpecified = retryDelay == default(System.Nullable<System.TimeSpan>),
-				TestDurationInSeconds = testDuration == null ? default(long) : ((long)testDuration.Value.TotalSeconds),
-				TestDurationInSecondsSpecified = testDuration == default(System.Nullable<System.TimeSpan>),
-				AutoGranted = autoGranted ?? default(bool),
-				AutoGrantedSpecified = autoGranted == default(System.Nullable<bool>),
-				AutoGrantedValue = autoGrantedValue ?? default(int),
-				AutoGrantedValueSpecified = autoGrantedValue == default(System.Nullable<int>),
-            };
-
-            var resp = await ExecuteRequest<CreateQualificationTypeRequest, CreateQualificationTypeResponse>(request);
             return resp;
 		}
 

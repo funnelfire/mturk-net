@@ -24,13 +24,13 @@ namespace MTurk
 <#
     var compiler = new CSharpCodeProvider();
 
-
 	var types = typeof(TurkClient).Assembly.GetTypes()
 		.Where(t => t.Namespace != null && t.Namespace.StartsWith("MTurk.DTO"))
 		.ToImmutableHashSet();
 	var requests = types
 		.Where(t => t.Name.EndsWith("Request"))
 		.Select(t => new { RequestType = t, Name = t.Name.TrimEnd("Request") })
+		.Where(x => x.Name != "CreateHIT")
 		.Select(x => new { x.RequestType, x.Name, ResponseType = types.SingleOrDefault(t => t.Name == x.Name + "Response") })
 		.Where(x => x.ResponseType != null);
 
